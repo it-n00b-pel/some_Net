@@ -1,0 +1,70 @@
+.userModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  border: 2px solid #000;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+
+  .nameAndAvatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .avatar {
+      margin-top: 20px;
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  .lookJob, {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+  }
+
+  .jobDescription, .status {
+
+    .mainText {
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    p {
+      float: left;
+    }
+  }
+
+  .contacts {
+    a {
+      padding-right: 15px;
+    }
+
+    padding: 20px 0;
+  }
+
+
+  button {
+    width: 120px;
+    margin: 0 auto;
+  }
+
+  .preloader {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, 50%);
+  }
+
+}

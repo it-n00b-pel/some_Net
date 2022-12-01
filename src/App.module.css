@@ -1,0 +1,29 @@
+.App {
+  display: flex;
+  flex-direction: column;
+}
+.App .content {
+  width: 80%;
+  margin: 40px auto;
+  display: flex;
+  gap: 40px;
+}
+@media screen and (max-width: 560px) {
+  .App .content {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 425px) {
+  .App .content {
+    width: 100%;
+  }
+}
+.App .preloader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+/*# sourceMappingURL=App.module.css.map */

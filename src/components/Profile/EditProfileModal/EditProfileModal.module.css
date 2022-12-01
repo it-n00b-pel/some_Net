@@ -1,0 +1,78 @@
+.profileModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 650px;
+  border: 3px solid #2196f3;
+  border-radius: 10px;
+  background-color: #eee;
+  padding: 32px;
+}
+.profileModal .preloader {
+  position: absolute;
+  top: 45%;
+  left: 47%;
+  transform: translate(-50%, 50%);
+}
+@media screen and (max-width: 768px) {
+  .profileModal {
+    width: 550px;
+  }
+}
+@media screen and (max-width: 590px) {
+  .profileModal {
+    width: 400px;
+  }
+}
+.profileModal form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+}
+.profileModal form .inputBlock {
+  height: 55px;
+  text-align: center;
+}
+.profileModal form .inputBlock h3 {
+  font-size: 26px;
+  padding: 0;
+  margin: 0;
+}
+.profileModal form input {
+  width: 280px;
+  height: 30px;
+}
+@media screen and (max-width: 768px) {
+  .profileModal form input {
+    width: 230px;
+  }
+}
+@media screen and (max-width: 590px) {
+  .profileModal form input {
+    width: 320px;
+  }
+}
+.profileModal form .lookingForAJob {
+  width: 300px;
+  display: flex;
+}
+.profileModal form .lookingForAJob input {
+  width: 40px;
+  height: 40px;
+}
+.profileModal form .btnBlock {
+  width: 370px;
+  display: flex;
+  justify-content: space-between;
+}
+.profileModal form .btnBlock button {
+  width: 120px;
+  font-weight: bolder;
+  font-size: 14px;
+}
+
+/*# sourceMappingURL=EditProfileModal.module.css.map */

@@ -1,0 +1,17 @@
+.editUserPhoto {
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.userPhoto {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  object-fit: cover;
+}
+
+.loadAvatar input {
+  display: none;
+}

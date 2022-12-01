@@ -1,0 +1,9 @@
+.users {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 30px;
+  gap: 50px;
+}
+
+/*# sourceMappingURL=Users.module.css.map */

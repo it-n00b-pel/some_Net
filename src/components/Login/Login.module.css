@@ -1,0 +1,60 @@
+.login {
+  width: 100%;
+  background-color: #424242;
+  border-radius: 10px;
+}
+.login form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+  color: #e0e0e0;
+  margin: 0 auto;
+  justify-content: center;
+  height: 600px;
+  row-gap: 25px;
+}
+.login form .inputBlock {
+  margin: 0 10px;
+  height: 60px;
+}
+.login form .inputBlock input {
+  color: #e0e0e0;
+  font-weight: bolder;
+}
+.login form .inputBlock label {
+  color: #e0e0e0;
+}
+.login form .inputBlock input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #424242 inset;
+  -webkit-text-fill-color: #e0e0e0;
+}
+.login form .rememberMe {
+  display: flex;
+  margin-left: 10px;
+}
+.login form button {
+  margin: 0 auto;
+  width: 70%;
+  background-color: #e0e0e0;
+  font-weight: bolder;
+  font-size: 18px;
+}
+.login form button:hover {
+  background-color: #2196f3;
+  color: #fff;
+}
+.login form p {
+  font-size: 12px;
+}
+.login form a {
+  text-decoration: underline;
+  font-size: 18px;
+  color: #fff;
+  font-weight: bolder;
+}
+.login .free {
+  margin-left: 10px;
+}
+
+/*# sourceMappingURL=Login.module.css.map */

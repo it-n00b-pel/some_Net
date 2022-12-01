@@ -1,0 +1,57 @@
+.userModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  border: 2px solid #000;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.userModal .nameAndAvatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.userModal .nameAndAvatar h3 {
+  margin: 0;
+  font-size: 26px;
+}
+.userModal .nameAndAvatar .avatar {
+  margin-top: 20px;
+  width: 120px;
+  height: 120px;
+}
+.userModal .lookJob {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+.userModal .jobDescription .mainText, .userModal .status .mainText {
+  font-weight: bold;
+  font-size: 22px;
+}
+.userModal .jobDescription p, .userModal .status p {
+  float: left;
+}
+.userModal .contacts {
+  padding: 20px 0;
+}
+.userModal .contacts a {
+  padding-right: 15px;
+}
+.userModal button {
+  width: 120px;
+  margin: 0 auto;
+}
+.userModal .preloader {
+  position: absolute;
+  top: 50%;
+  left: 45%;
+  transform: translate(-50%, 50%);
+}
+
+/*# sourceMappingURL=UserProfileModal.module.css.map */

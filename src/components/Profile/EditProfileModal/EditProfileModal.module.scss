@@ -1,0 +1,83 @@
+.profileModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 650px;
+  border: 3px solid #2196f3;
+  border-radius: 10px;
+  background-color: #eee;
+  padding: 32px;
+
+  .preloader {
+    position: absolute;
+    top: 45%;
+    left: 47%;
+    transform: translate(-50%, 50%);
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 550px;
+  }
+  @media screen and (max-width: 590px) {
+    width: 400px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+
+    .inputBlock {
+      height: 55px;
+      text-align: center;
+
+      h3 {
+        font-size: 26px;
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    input {
+      width: 280px;
+      height: 30px;
+      @media screen and (max-width: 768px) {
+        width: 230px;
+      }
+      @media screen and (max-width: 590px) {
+        width: 320px;
+      }
+    }
+
+
+    .lookingForAJob {
+      width: 300px;
+      display: flex;
+
+      input {
+        width: 40px;
+        height: 40px;
+      }
+
+    }
+
+    .btnBlock {
+      width: 370px;
+      display: flex;
+      justify-content: space-between;
+
+
+      button {
+        width: 120px;
+        font-weight: bolder;
+        font-size: 14px;
+      }
+
+    }
+
+  }
+}

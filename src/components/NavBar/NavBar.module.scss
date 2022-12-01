@@ -1,0 +1,78 @@
+.navigator {
+
+  & > :not(style) {
+    width: 220px;
+    border-radius: 10px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    display: none;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #424242;
+    height: 100%;
+    border-radius: 10px;
+
+    a {
+      text-decoration: none;
+      color: #e0e0e0;
+      font-size: 22px;
+      font-weight: bolder;
+      margin: 10px 0;
+      transition: 0.3s;
+
+    }
+
+    & a:hover {
+      transform: scale(1.2);
+    }
+
+    .activeLink {
+      color: #2196f3;
+      font-size: 25px;
+
+    }
+
+  }
+
+  .friendBlock {
+    height: 110px;
+    margin-top: 50px;
+    background-color: #424242;
+    text-align: center;
+    padding-top: 12px;
+
+    a {
+      text-decoration: none;
+      color: #e0e0e0;
+      font-size: 24px;
+      font-weight: bolder;
+      margin-top: 24px;
+
+    }
+    
+    .activeLink {
+      color: #2196f3;
+      font-size: 25px;
+
+    }
+
+    .activeLink {
+      color: #2196f3;
+      font-size: 25px;
+
+    }
+
+    .friendAvatars {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 12px;
+    }
+  }
+}
+
+

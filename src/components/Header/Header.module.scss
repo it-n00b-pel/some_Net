@@ -1,0 +1,55 @@
+.appBar {
+  background-color: #424242;
+  border-radius: 0 0 10px 10px;
+  margin: 0 auto;
+  height: 70px;
+  width: 80%;
+
+  @media screen and (max-width: 560px) {
+    width: 90%;
+  }
+  @media screen and (max-width: 425px) {
+    width: 100%;
+  }
+
+  .toolbarHeader {
+    display: flex;
+    justify-content: space-between;
+    background-color: #424242;
+
+    .leftSide {
+      display: flex;
+      align-items: center;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2196f3;
+      font-weight: bold;
+      font-size: 28px;
+    }
+
+    .profileSetting {
+      h3 {
+        margin-right: 10px;
+        color: #e0e0e0;
+        font-size: 16px;
+
+        @media screen and (max-width: 425px) {
+          display: none;
+        }
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+      }
+
+
+    }
+  }
+
+
+}
+
+
