@@ -20,6 +20,7 @@ const RandomFriendsAvatar: React.FC<RandomFriendsAvatarPropsType> = ({friends}) 
             } else {
                 setAvatar('');
             }
+            setTrigger(trigger + 1);
             setName(friends[index].name);
         }
 
@@ -27,11 +28,14 @@ const RandomFriendsAvatar: React.FC<RandomFriendsAvatarPropsType> = ({friends}) 
 
     useEffect(() => {
         const index = Math.floor(Math.random() * (10 - 5) + 5);
-        setTimeout(() => {
+        const id = setInterval(() => {
             getRandomAvatar();
-            setTrigger(trigger + 1);
         }, index * 1500);
-    }, [trigger]);
+
+        return () => {
+            clearInterval(id);
+        };
+    });
 
     return (
         <Avatar src={avatar ? avatar : undefined} alt={name} style={{
