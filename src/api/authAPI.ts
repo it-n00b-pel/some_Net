@@ -11,6 +11,9 @@ export const authAPI = {
     logOut() {
         return instance.delete<ResponseTypeSocNet>('auth/login');
     },
+    getCaptchaUrl() {
+        return instance.get<{ url: string }>('security/get-captcha-url');
+    },
 };
 
 type MeData = {
@@ -22,5 +25,6 @@ type MeData = {
 export type LoginData = {
     email: string,
     password: string,
-    rememberMe?: boolean
+    rememberMe?: boolean,
+    captcha: string | null
 }

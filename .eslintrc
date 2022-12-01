@@ -5,7 +5,7 @@
   ],
   "rules": {
     "no-unused-vars": "error",
-    "no-console": "error",
+    "no-console": "warn",
     "comma-dangle": [
       "error",
       "always-multiline"

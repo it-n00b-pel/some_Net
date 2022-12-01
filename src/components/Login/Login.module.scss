@@ -11,8 +11,8 @@
     max-width: 380px;
     color: #e0e0e0;
     margin: 0 auto;
+    padding: 30px;
     justify-content: center;
-    height: 600px;
     row-gap: 25px;
 
     .inputBlock {
@@ -38,6 +38,16 @@
     .rememberMe {
       display: flex;
       margin-left: 10px;
+    }
+
+    .captchaBlock {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 20px;
+      img{
+        padding: 15px;
+      }
     }
 
     button {

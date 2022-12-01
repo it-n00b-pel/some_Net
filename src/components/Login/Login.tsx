@@ -10,21 +10,24 @@ import {login} from '../../store/reducers/authReducer';
 
 import style from './Login.module.scss';
 
-
 type FormikErrorType = {
     email?: string,
-    password?: string
+    password?: string,
+    captcha?: string,
 }
 
 const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLogin = useAppSelector(state => state.auth.isLogin);
+    const captchaUrl = useAppSelector(state => state.app.captcha);
     const errors: FormikErrorType = {};
+
     const formik = useFormik({
         initialValues: {
             email: '',
             password: '',
             rememberMe: true,
+            captcha: '',
         },
         validate: values => {
             if (!values.email) {
@@ -35,12 +38,24 @@ const Login: React.FC = () => {
             if (values.password.length < 4) {
                 errors.password = 'Min 4 characters';
             }
+            if (formik.touched.captcha && values.captcha.length < 4) {
+                errors.captcha = 'Min 4 characters';
+            }
             return errors;
         },
         onSubmit: values => {
-            dispatch(login({email: values.email, password: values.password, rememberMe: values.rememberMe}));
+            dispatch(login({email: values.email, password: values.password, rememberMe: values.rememberMe, captcha: values.captcha}));
         },
     });
+
+    const captchaUrlBlock = captchaUrl ? <div className={style.captchaBlock}>
+        <img src={captchaUrl} alt="captchaUrl"/>
+        <TextField label="Captcha" variant="outlined"
+                   error={!!formik.errors.captcha}
+                   className={style.inputBlock}
+                   helperText={formik.touched.captcha && formik.errors.captcha}
+                   {...formik.getFieldProps('captcha')}/>
+    </div> : null;
 
     if (isLogin) return <Navigate to={'/'}/>;
     return (
@@ -67,6 +82,8 @@ const Login: React.FC = () => {
                               {...formik.getFieldProps('rememberMe')}
                     />
                 </div>
+
+                {captchaUrlBlock}
 
                 <Button type={'submit'}>Login</Button>
 

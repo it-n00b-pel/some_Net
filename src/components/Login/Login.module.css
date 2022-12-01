@@ -10,8 +10,8 @@
   max-width: 380px;
   color: #e0e0e0;
   margin: 0 auto;
+  padding: 30px;
   justify-content: center;
-  height: 600px;
   row-gap: 25px;
 }
 .login form .inputBlock {
@@ -32,6 +32,15 @@
 .login form .rememberMe {
   display: flex;
   margin-left: 10px;
+}
+.login form .captchaBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+}
+.login form .captchaBlock img {
+  padding: 15px;
 }
 .login form button {
   margin: 0 auto;
