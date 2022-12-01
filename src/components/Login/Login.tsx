@@ -38,12 +38,10 @@ const Login: React.FC = () => {
             if (values.password.length < 4) {
                 errors.password = 'Min 4 characters';
             }
-            if (formik.touched.captcha && values.captcha.length < 4) {
-                errors.captcha = 'Min 4 characters';
-            }
             return errors;
         },
         onSubmit: values => {
+
             dispatch(login({email: values.email, password: values.password, rememberMe: values.rememberMe, captcha: values.captcha}));
         },
     });

@@ -49,6 +49,7 @@ export const login = createAsyncThunk('auth/login', async (loginData: LoginData,
             thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
             await thunkAPI.dispatch(me());
         } else if (response.data.resultCode === 10) {
+            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
             thunkAPI.dispatch(getCaptchaDataUrl());
         } else {
             handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
