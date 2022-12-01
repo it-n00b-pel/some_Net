@@ -22,6 +22,10 @@
 
   .page {
     max-width: 385px;
+
+    @media screen and (max-width: 450px) {
+      gap: 2px;
+    }
   }
 
   .pageCount {

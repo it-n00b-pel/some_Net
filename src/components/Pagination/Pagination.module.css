@@ -20,6 +20,11 @@
 .pagination .page {
   max-width: 385px;
 }
+@media screen and (max-width: 450px) {
+  .pagination .page {
+    gap: 2px;
+  }
+}
 .pagination .pageCount div {
   padding: 0;
   margin: 0;
