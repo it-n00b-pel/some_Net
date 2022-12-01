@@ -23,7 +23,7 @@ const Login: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             email: '',
-            password: '3WkYr_gjnmmQ5AE',
+            password: '',
             rememberMe: true,
         },
         validate: values => {
@@ -38,7 +38,6 @@ const Login: React.FC = () => {
             return errors;
         },
         onSubmit: values => {
-            // alert(JSON.stringify(values, null, 2));
             dispatch(login({email: values.email, password: values.password, rememberMe: values.rememberMe}));
         },
     });

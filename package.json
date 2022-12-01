@@ -2,6 +2,7 @@
   "name": "social_net",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://it-n00b-pel.github.io/some_Net",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
@@ -24,7 +25,6 @@
     "axios": "^1.2.0",
     "formic": "^0.0.10",
     "formik": "^2.2.9",
-    "gh-pages": "^4.0.0",
     "material-icons": "^1.11.10",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.0.0",
@@ -44,6 +44,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "lint": "eslint -c .eslintrc --ext .ts,.tsx .",
     "lint:fix": "yarn run eslint --fix --ext .ts,.tsx ."
   },
@@ -60,6 +62,7 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-simple-import-sort": "^8.0.0"
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "gh-pages": "^4.0.0"
   }
 }
