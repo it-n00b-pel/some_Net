@@ -1,0 +1,10 @@
+.noPage {
+  display: flex;
+  justify-content: center;
+}
+.noPage img {
+  width: 80%;
+  padding: 30px;
+}
+
+/*# sourceMappingURL=noPage.module.css.map */

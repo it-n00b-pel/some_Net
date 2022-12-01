@@ -7,6 +7,7 @@ import ProfileContainer from './Profile/ProfileContainer';
 import Login from './Login/Login';
 import UsersContainer from './Users/UsersContainer';
 import RequireAuth from './RequireAuth/RequireAuth';
+import NotFoundPage from './404NotFound/NotFoundPage';
 
 const MyRoutes: React.FC = () => {
     return (
@@ -16,7 +17,10 @@ const MyRoutes: React.FC = () => {
             <Route path="/login" element={<Login/>}/>
             <Route path="/users" element={<UsersContainer/>}/>
             <Route path="/friends" element={<RequireAuth children={<UsersContainer/>}/>}/>
-            {/*<Route path="/news" element={<RequireAuth children={<div>nor</div>}/>}/>*/}
+            <Route path="/news" element={<NotFoundPage/>}/>
+            <Route path="/settings" element={<NotFoundPage/>}/>
+            <Route path="/music" element={<NotFoundPage/>}/>
+
         </Routes>
     );
 };
