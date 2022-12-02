@@ -41,7 +41,6 @@ const Login: React.FC = () => {
             return errors;
         },
         onSubmit: values => {
-
             dispatch(login({email: values.email, password: values.password, rememberMe: values.rememberMe, captcha: values.captcha}));
         },
     });

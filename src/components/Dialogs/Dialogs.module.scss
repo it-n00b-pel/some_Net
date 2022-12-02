@@ -1,0 +1,56 @@
+.dialogBlock {
+  width: 70%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
+
+    .message {
+      width: 100%;
+      max-width: 300px;
+
+      span {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      p {
+        display: inline-block;
+        background-color: rgba(33, 243, 99, 0.2);
+        border-radius: 8px;
+        padding: 5px;
+        word-wrap: anywhere;
+      }
+
+    }
+
+    .myMessage {
+      width: 100%;
+      text-align: right;
+
+      span {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      p {
+        display: inline-block;
+        background-color: rgba(33, 150, 243, 0.2);
+        border-radius: 8px;
+        padding: 5px;
+        word-wrap: anywhere;
+        max-width: 350px;
+      }
+
+    }
+  }
+}

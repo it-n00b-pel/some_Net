@@ -8,6 +8,7 @@ import {authReducer} from './reducers/authReducer';
 import {profileReducer} from './reducers/profileReducer';
 import {ActionTypeForUsersReducer, usersReducer} from './reducers/usersReducers';
 import {ActionTypeForUserProfileReducer, userProfileReducer} from './reducers/userProfileReducer';
+import {DialogsActionType, dialogsReducer} from './reducers/messagesReducer';
 
 const rootReducer = combineReducers({
     app: appReducer,
@@ -15,13 +16,14 @@ const rootReducer = combineReducers({
     profile: profileReducer,
     users: usersReducer,
     userProfile: userProfileReducer,
+    dialogs: dialogsReducer,
 });
 export const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}).prepend(thunkMiddleware),
 });
 
-type AppActionsType = ActionTypeForAppReducer | ActionTypeForUsersReducer | ActionTypeForUserProfileReducer
+type AppActionsType = ActionTypeForAppReducer | ActionTypeForUsersReducer | ActionTypeForUserProfileReducer | DialogsActionType
 export type AppRootStateType = ReturnType<typeof store.getState>;
 export type AppDispatch = ThunkDispatch<AppRootStateType, unknown, AppActionsType>
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AppActionsType>
