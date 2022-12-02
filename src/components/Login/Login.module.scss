@@ -16,18 +16,21 @@
     row-gap: 25px;
 
     .inputBlock {
-      width: 350px;
+      width: 100%;
+      max-width: 350px;
       height: 60px;
+
 
       input {
         color: #e0e0e0;
         font-weight: bolder;
-
+        width: 100%;
       }
 
       @media screen and (max-width: 500px) {
-        width: 75%;
+        width: 80%;
       }
+
 
       label {
         color: #e0e0e0;
