@@ -13,6 +13,7 @@ const MyRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/profile/:userId" element={<RequireAuth children={<ProfileContainer/>}/>}/>
+            <Route path="/profile/:userId" element={<RequireAuth children={<ProfileContainer/>}/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/dialogs" element={<RequireAuth children={<DialogsContainer/>}/>}/>
             <Route path="/users" element={<UsersContainer/>}/>
