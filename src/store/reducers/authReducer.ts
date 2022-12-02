@@ -22,8 +22,8 @@ const initialState = {
 };
 
 export const me = createAsyncThunk('auth/me', async (arg, thunkAPI) => {
+    thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
         const myData = await authAPI.me();
         if (myData.data.resultCode === 0) {
             await thunkAPI.dispatch(getFriends({count: 100, term: '', page: 1, friend: true}));
