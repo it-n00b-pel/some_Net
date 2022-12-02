@@ -2,7 +2,6 @@ import React from 'react';
 
 import {Route, Routes} from 'react-router-dom';
 
-import MainPageContainer from './MainPage/MainPageContainer';
 import ProfileContainer from './Profile/ProfileContainer';
 import Login from './Login/Login';
 import UsersContainer from './Users/UsersContainer';
@@ -13,7 +12,6 @@ import DialogsContainer from './Dialogs/DialogsContainer';
 const MyRoutes: React.FC = () => {
     return (
         <Routes>
-            <Route path="/" element={<MainPageContainer/>}/>
             <Route path="/profile/:userId" element={<RequireAuth children={<ProfileContainer/>}/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/dialogs" element={<RequireAuth children={<DialogsContainer/>}/>}/>

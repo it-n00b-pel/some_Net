@@ -79,7 +79,7 @@ const Header: React.FC<HeaderPropsType> = ({login, logOut, myId, isLogin, avatar
                 <Toolbar className={s.toolbarHeader}>
                     <Typography variant="h6" className={s.leftSide}>
                         <BurgerMenu/>
-                        <NavLink to={'/'} style={{pointerEvents: isLoading ? 'none' : 'auto'}}>some.NET</NavLink>
+                        <NavLink to={'/profile/' + myId} style={{pointerEvents: isLoading ? 'none' : 'auto'}}>some.NET</NavLink>
                     </Typography>
 
                     <div className={s.profileSetting}>
