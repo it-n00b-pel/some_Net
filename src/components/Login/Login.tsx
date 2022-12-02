@@ -19,6 +19,7 @@ type FormikErrorType = {
 const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const isLogin = useAppSelector(state => state.auth.isLogin);
+    const myId = useAppSelector(state => state.auth.myData.id);
     const captchaUrl = useAppSelector(state => state.app.captcha);
     const errors: FormikErrorType = {};
 
@@ -54,7 +55,7 @@ const Login: React.FC = () => {
                    {...formik.getFieldProps('captcha')}/>
     </div> : null;
 
-    if (isLogin) return <Navigate to={'/'}/>;
+    if (isLogin) return <Navigate to={'/profile/'+myId}/>;
     return (
         <div className={style.login}>
             <form onSubmit={formik.handleSubmit}>
