@@ -13,7 +13,7 @@ const DialogsContainer: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const pushMessage = (message: string) => {
-        dispatch(sendMessage({message, id: myId, name: login}));
+        message.length && dispatch(sendMessage({message, id: myId, name: login}));
     };
 
     return (
