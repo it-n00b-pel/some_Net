@@ -4,6 +4,8 @@ import {Badge, IconButton} from '@mui/material';
 
 import {PhotoCamera} from '@material-ui/icons';
 
+import {Avatar} from '@material-ui/core';
+
 import {useAppDispatch, useAppSelector} from '../../../store/store';
 import {updateProfilePhoto} from '../../../store/reducers/profileReducer';
 
@@ -29,7 +31,11 @@ const BadgeAvatar: React.FC = () => {
                     </IconButton>
                 </label>}
         >
-            <img className={style.userPhoto} src={userProfileAvatar ? userProfileAvatar : ''} alt="Personal user avatar"/>
+            <Avatar
+                alt="Personal user avatar"
+                src={userProfileAvatar ? userProfileAvatar : '/broken-image.jpg'}
+                style={{width: 200, height: 200}}
+            />
         </Badge>
     );
 };
