@@ -21,6 +21,8 @@
   }
   @media screen and (max-width: 590px) {
     width: 400px;
+    height: 100%;
+    overflow-y: auto;
   }
 
   form {
@@ -30,6 +32,10 @@
     gap: 32px;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: 590px) {
+      padding-top: 20px;
+    }
 
     .inputBlock {
       height: 55px;
