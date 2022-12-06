@@ -1,42 +1,58 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+
+import {ThunkDispatch} from 'redux-thunk';
+
+import {chatAPI} from '../../api/chatAPI';
 
 const initialState = {
-    messages: [
-        {
-            id: 1,
-            name: 'Mark',
-            message: 'Hi',
-        },
-        {
-            id: 2,
-            name: 'Nik',
-            message: 'Alloha',
-        },
-        {
-            id: 1,
-            name: 'Tom',
-            message: 'Are you here?',
-        },
-        {
-            id: 1,
-            name: 'Kate',
-            message: 'Call me please',
-        },
-    ],
+    messages: [] as MessageType[],
 };
+
+let _newMessageHandler: ((messages: MessageType[]) => void) | null = null;
+
+const newMessageHandler = (dispatch: ThunkDispatch<unknown, unknown, AnyAction>) => {
+    if (_newMessageHandler === null) {
+        _newMessageHandler = (messages) => {
+            dispatch(messagesReceived({messages}));
+        };
+    }
+    return _newMessageHandler;
+};
+
+export const startMessagesListening = createAsyncThunk('dialogs/startMessagesListening', async (arg, thunkAPI) => {
+    chatAPI.start();
+    chatAPI.subscribe(newMessageHandler(thunkAPI.dispatch));
+});
+
+export const stopMessagesListening = createAsyncThunk('dialogs/stopMessagesListening', async (arg, thunkAPI) => {
+    chatAPI.unsubscribe(newMessageHandler(thunkAPI.dispatch));
+    chatAPI.stop();
+});
+
+export const pushMessage = createAsyncThunk('dialogs/sendMessages', async (message: string) => {
+    chatAPI.sendMessage(message);
+});
 
 const slice = createSlice({
     name: 'dialogs',
     initialState,
     reducers: {
-        sendMessage(state, action: PayloadAction<{ message: string, id: number, name: string}>) {
-            state.messages.push({id: action.payload.id, message: action.payload.message, name :action.payload.name });
+        messagesReceived(state, action: PayloadAction<{ messages: MessageType[] }>) {
+            state.messages = [...state.messages, ...action.payload.messages];
         },
+
     },
 });
 
-export const {sendMessage} = slice.actions;
+export const {messagesReceived} = slice.actions;
 
 export const dialogsReducer = slice.reducer;
 
-export type DialogsActionType = ReturnType<typeof sendMessage>
+export type DialogsActionType = ReturnType<typeof messagesReceived>
+
+export type MessageType = {
+    userId: number,
+    userName: string,
+    message: string,
+    photo: string,
+}

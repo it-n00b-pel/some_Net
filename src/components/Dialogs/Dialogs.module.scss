@@ -40,6 +40,8 @@
       span {
         font-size: 18px;
         font-weight: bold;
+        display: flex;
+        align-items: center;
       }
 
       p {
@@ -49,6 +51,7 @@
         padding: 5px;
         word-wrap: anywhere;
         max-width: 350px;
+
       }
 
     }

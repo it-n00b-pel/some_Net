@@ -1,23 +1,40 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {useAppDispatch, useAppSelector} from '../../store/store';
 
-import {sendMessage} from '../../store/reducers/messagesReducer';
+import {pushMessage, startMessagesListening, stopMessagesListening} from '../../store/reducers/messagesReducer';
 
 import Dialogs from './Dialogs';
 
 const DialogsContainer: React.FC = () => {
-    const dialogs = useAppSelector(state => state.dialogs.messages);
     const myId = useAppSelector(state => state.auth.myData.id);
-    const login = useAppSelector(state => state.auth.myData.login);
+    const messages = useAppSelector(state => state.dialogs.messages);
     const dispatch = useAppDispatch();
-
-    const pushMessage = (message: string) => {
-        message.length && dispatch(sendMessage({message, id: myId, name: login}));
+    const isReady = 'ready';
+    const sendMessage = (message: string) => {
+        // message.length && dispatch(sendMessage({message, id: myId, name: login}));
+        dispatch(pushMessage(message));
+    };
+    const scrollDown = () => {
+        const dialogs = window.document.getElementById('messages');
+        if (dialogs !== null) {
+            dialogs.scrollTop = 999;
+        }
     };
 
+    useEffect(()=>{
+
+    },[messages])
+
+    useEffect(() => {
+        dispatch(startMessagesListening());
+        return () => {
+            dispatch(stopMessagesListening());
+        };
+    }, []);
+
     return (
-        <Dialogs dialogs={dialogs} pushMessage={pushMessage} myId={myId}/>
+        <Dialogs dialogs={messages} pushMessage={sendMessage} myId={myId} isReady={isReady}/>
     );
 };
 
