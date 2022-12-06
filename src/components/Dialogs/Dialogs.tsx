@@ -54,10 +54,6 @@ const Dialogs: React.FC<DialogsPropsType> = ({dialogs, pushMessage, myId, isRead
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value);
-        if (e) {
-
-        }
-
     };
 
     const onClickHandler = () => {

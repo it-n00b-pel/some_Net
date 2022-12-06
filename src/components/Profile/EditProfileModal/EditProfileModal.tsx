@@ -86,7 +86,6 @@ const EditProfileModal: React.FC = () => {
                     instagram: values.instagram,
                 },
             }));
-            // handleClose();
         },
     });
 
