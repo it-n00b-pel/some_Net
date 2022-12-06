@@ -31,16 +31,6 @@ const EditProfileModal: React.FC = () => {
     const profile = useAppSelector(state => state.profile.profile);
     const isLoading = useAppSelector(state => state.app.status) === 'loading';
 
-    // const validateSocialLinks = (values: any, errors: FormikErrorType) => {
-    //     const socialKeys = ['github', 'vk', 'facebook', 'twitter', 'youtube', 'instagram', 'mainLink', 'website'];
-    //     for (let i = 0; i < socialKeys.length; i++) {
-    //         if ((!/^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-\/])*)?/.test(values[socialKeys[i]])) && values[socialKeys[i]].length > 0) {
-    //             // @ts-ignore
-    //             errors[socialKeys[i]] = `Invalid ${socialKeys[i]} URL `;
-    //         }
-    //     }
-    // };
-
     const formik = useFormik({
 
         initialValues: {
@@ -77,7 +67,6 @@ const EditProfileModal: React.FC = () => {
                     errors[socialKeys[i]] = `Invalid ${socialKeys[i]} URL `;
                 }
             }
-            // validateSocialLinks(values, errors);
             return errors;
         },
         onSubmit: values => {
