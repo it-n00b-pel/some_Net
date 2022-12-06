@@ -48,7 +48,7 @@ const PaginationPage: React.FC<PaginationPagePropsType> = ({total, clearSearchPa
 
     }, [debouncedName[0]]);
     useEffect(() => {
-            setPage(pageNumber)
+        setPage(pageNumber);
     }, [pageNumber]);
     return (
         <div className={style.pagination}>

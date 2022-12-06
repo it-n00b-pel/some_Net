@@ -18,8 +18,6 @@ type DialogsPropsType = {
 }
 
 const Dialogs: React.FC<DialogsPropsType> = ({dialogs, pushMessage, myId, isReady}) => {
-    console.log('>>>>>>DIALOGS');
-
     const [message, setMessage] = useState('');
     const messagesAnchorRef = useRef<HTMLDivElement>(null);
     const [isAutoScroll, setAutoScroll] = useState(false);

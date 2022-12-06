@@ -8,7 +8,7 @@ import Status from './Status';
 const StatusContainer: React.FC = () => {
     const dispatch = useAppDispatch();
     const statusFromStore = useAppSelector(state => state.profile.status);
-    const isLoading = useAppSelector(state => state.app.status)=='loading';
+    const isLoading = useAppSelector(state => state.app.status) === 'loading';
     let [status, setStatus] = useState(statusFromStore);
     let [editMode, setEditMode] = useState(false);
 

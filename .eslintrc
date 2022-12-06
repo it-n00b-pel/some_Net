@@ -4,7 +4,7 @@
     "react-app/jest"
   ],
   "rules": {
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-console": "warn",
     "comma-dangle": [
       "error",

@@ -2,15 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Box, Button} from '@material-ui/core';
 import {Checkbox, CircularProgress, Fade, Modal, TextField} from '@mui/material';
 
-
-
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 
 import {useAppDispatch, useAppSelector} from '../../../store/store';
 import {updateProfileData} from '../../../store/reducers/profileReducer';
 
 import s from './EditProfileModal.module.scss';
-
 
 type FormikErrorType = {
     fullName?: string,
@@ -107,7 +104,7 @@ const EditProfileModal: React.FC = () => {
     useEffect(() => {
         formik.values.fullName = profile.fullName;
         formik.values.aboutMe = profile.aboutMe;
-        formik.values.lookingForAJob = !!profile.lookingForAJob;
+        formik.values.lookingForAJob = profile.lookingForAJob;
         formik.values.lookingForAJobDescription = profile.lookingForAJobDescription;
         formik.values.vk = profile.contacts.vk;
         formik.values.instagram = profile.contacts.instagram;
@@ -121,16 +118,13 @@ const EditProfileModal: React.FC = () => {
 
     return (
         <div>
-            <Button onClick={handleOpen}  disabled={isLoading} variant={'contained'} color={'primary'}>Edit Profile</Button>
+            <Button onClick={handleOpen} disabled={isLoading} variant={'contained'} color={'primary'}>Edit Profile</Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
-                BackdropProps={{
-                    // timeout: 5000,
-                }}
             >
                 <Fade in={open}>
 
