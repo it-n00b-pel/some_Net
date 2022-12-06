@@ -6,11 +6,12 @@ import {chatAPI} from '../../api/chatAPI';
 
 const initialState = {
     messages: [] as MessageType[],
+    status: 'pending' as StatusType,
 };
 
 let _newMessageHandler: ((messages: MessageType[]) => void) | null = null;
 
-const newMessageHandler = (dispatch: ThunkDispatch<unknown, unknown, AnyAction>) => {
+const newMessageHandlerCreator = (dispatch: ThunkDispatch<unknown, unknown, AnyAction>) => {
     if (_newMessageHandler === null) {
         _newMessageHandler = (messages) => {
             dispatch(messagesReceived({messages}));
@@ -19,13 +20,26 @@ const newMessageHandler = (dispatch: ThunkDispatch<unknown, unknown, AnyAction>)
     return _newMessageHandler;
 };
 
+let _statusChangedHandler: ((status: StatusType) => void) | null = null;
+
+const statusChangedHandlerCreator = (dispatch: ThunkDispatch<unknown, unknown, AnyAction>) => {
+    if (_statusChangedHandler === null) {
+        _statusChangedHandler = (status) => {
+            dispatch(setStatus({status}));
+        };
+    }
+    return _statusChangedHandler;
+};
+
 export const startMessagesListening = createAsyncThunk('dialogs/startMessagesListening', async (arg, thunkAPI) => {
     chatAPI.start();
-    chatAPI.subscribe(newMessageHandler(thunkAPI.dispatch));
+    chatAPI.subscribe('messages-received', newMessageHandlerCreator(thunkAPI.dispatch));
+    chatAPI.subscribe('status-changed', statusChangedHandlerCreator(thunkAPI.dispatch));
 });
 
 export const stopMessagesListening = createAsyncThunk('dialogs/stopMessagesListening', async (arg, thunkAPI) => {
-    chatAPI.unsubscribe(newMessageHandler(thunkAPI.dispatch));
+    chatAPI.unsubscribe('messages-received', newMessageHandlerCreator(thunkAPI.dispatch));
+    chatAPI.unsubscribe('status-changed', statusChangedHandlerCreator(thunkAPI.dispatch));
     chatAPI.stop();
 });
 
@@ -40,15 +54,17 @@ const slice = createSlice({
         messagesReceived(state, action: PayloadAction<{ messages: MessageType[] }>) {
             state.messages = [...state.messages, ...action.payload.messages];
         },
-
+        setStatus(state, action: PayloadAction<{ status: StatusType }>) {
+            state.status = action.payload.status;
+        },
     },
 });
 
-export const {messagesReceived} = slice.actions;
+export const {messagesReceived, setStatus} = slice.actions;
 
 export const dialogsReducer = slice.reducer;
 
-export type DialogsActionType = ReturnType<typeof messagesReceived>
+export type DialogsActionType = ReturnType<typeof messagesReceived> | ReturnType<typeof setStatus>
 
 export type MessageType = {
     userId: number,
@@ -56,3 +72,5 @@ export type MessageType = {
     message: string,
     photo: string,
 }
+
+export type StatusType = 'pending' | 'ready' | 'error'

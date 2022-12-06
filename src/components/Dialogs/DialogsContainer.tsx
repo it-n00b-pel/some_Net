@@ -10,21 +10,11 @@ const DialogsContainer: React.FC = () => {
     const myId = useAppSelector(state => state.auth.myData.id);
     const messages = useAppSelector(state => state.dialogs.messages);
     const dispatch = useAppDispatch();
-    const isReady = 'ready';
+    const isReady = useAppSelector(state => state.dialogs.status);
+
     const sendMessage = (message: string) => {
-        // message.length && dispatch(sendMessage({message, id: myId, name: login}));
         dispatch(pushMessage(message));
     };
-    const scrollDown = () => {
-        const dialogs = window.document.getElementById('messages');
-        if (dialogs !== null) {
-            dialogs.scrollTop = 999;
-        }
-    };
-
-    useEffect(()=>{
-
-    },[messages])
 
     useEffect(() => {
         dispatch(startMessagesListening());
