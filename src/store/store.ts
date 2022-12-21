@@ -1,3 +1,4 @@
+import createSagaMiddleware from 'redux-saga';
 import {combineReducers} from 'redux';
 import thunkMiddleware, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {configureStore} from '@reduxjs/toolkit';
@@ -7,9 +8,10 @@ import {ActionTypeForAppReducer, appReducer} from './reducers/appReducer';
 import {authReducer} from './reducers/authReducer';
 import {profileReducer} from './reducers/profileReducer';
 import {ActionTypeForUsersReducer, usersReducer} from './reducers/usersReducers';
-import {ActionTypeForUserProfileReducer, userProfileReducer} from './reducers/userProfileReducer';
+import {ActionTypeForUserProfileReducer, userProfileReducer, userProfileWatcher} from './reducers/userProfileReducer';
 import {DialogsActionType, dialogsReducer} from './reducers/messagesReducer';
 
+const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
     app: appReducer,
     auth: authReducer,
@@ -18,10 +20,17 @@ const rootReducer = combineReducers({
     userProfile: userProfileReducer,
     dialogs: dialogsReducer,
 });
+
+function* rootWatcher() {
+    yield userProfileWatcher();
+}
+
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}).prepend(thunkMiddleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}).prepend(thunkMiddleware, sagaMiddleware),
 });
+
+sagaMiddleware.run(rootWatcher);
 
 type AppActionsType = ActionTypeForAppReducer | ActionTypeForUsersReducer | ActionTypeForUserProfileReducer | DialogsActionType
 export type AppRootStateType = ReturnType<typeof store.getState>;

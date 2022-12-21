@@ -1,7 +1,9 @@
+import {AxiosResponse} from 'axios';
+
 import {instance, ResponseTypeSocNet} from './instance';
 
 export const profileAPI = {
-    getProfile(userId: number) {
+    getProfile(userId: number): Promise<AxiosResponse<ProfileResponse>> {
         return instance.get<ProfileResponse>('profile/' + userId);
     },
     getStatus(userId: number) {

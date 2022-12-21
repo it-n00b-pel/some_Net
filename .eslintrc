@@ -4,14 +4,14 @@
     "react-app/jest"
   ],
   "rules": {
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "no-console": "warn",
     "comma-dangle": [
-      "error",
+      "warn",
       "always-multiline"
     ],
     "import/order": [
-      "error",
+      "warn",
       {
         "groups": [
           "builtin",

@@ -11,7 +11,7 @@ import WebIcon from '@mui/icons-material/Web';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
 
-import {cleanDataUser, getUserProfile} from '../../../../store/reducers/userProfileReducer';
+import {cleanDataUser, getUserProfileAC} from '../../../../store/reducers/userProfileReducer';
 import {useAppDispatch, useAppSelector} from '../../../../store/store';
 
 import style from './UserProfileModal.module.scss';
@@ -35,7 +35,7 @@ const UserProfileModal: React.FC<UserProfileModalPropsType> = ({userId, status, 
 
     useEffect(() => {
         if (open) {
-            dispatch(getUserProfile(userId));
+            dispatch(getUserProfileAC(userId));
         }
     }, [open]);
 
