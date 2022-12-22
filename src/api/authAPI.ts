@@ -1,4 +1,5 @@
 import {instance, ResponseTypeSocNet} from './instance';
+import {AxiosResponse} from 'axios';
 
 export const authAPI = {
     me() {
@@ -11,7 +12,7 @@ export const authAPI = {
     logOut() {
         return instance.delete<ResponseTypeSocNet>('auth/login');
     },
-    getCaptchaUrl() {
+    getCaptchaUrl(): Promise<AxiosResponse<{ url: string }>> {
         return instance.get<{ url: string }>('security/get-captcha-url');
     },
 };

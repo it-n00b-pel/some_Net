@@ -8,7 +8,7 @@ import {handleServerAppError, handleServerNetworkError} from '../../utils-error/
 
 import {AppDispatch} from '../store';
 
-import {getCaptchaDataUrl, setInitialized, setPreloaderStatus} from './appReducer';
+import {getCaptchaUrlAC, setInitialized, setPreloaderStatus} from './appReducer';
 import {getProfileData} from './profileReducer';
 import {getFriends} from './usersReducers';
 
@@ -50,7 +50,7 @@ export const login = createAsyncThunk('auth/login', async (loginData: LoginData,
             await thunkAPI.dispatch(me());
         } else if (response.data.resultCode === 10) {
             handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
-            thunkAPI.dispatch(getCaptchaDataUrl());
+            thunkAPI.dispatch(getCaptchaUrlAC());
         } else {
             handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
         }

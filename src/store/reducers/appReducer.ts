@@ -1,12 +1,10 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {call, put, takeEvery} from '@redux-saga/core/effects';
 
-import {AxiosError} from 'axios';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
+import {AxiosResponse} from 'axios';
 
 import {authAPI} from '../../api/authAPI';
-import {handleServerNetworkError} from '../../utils-error/error-utls';
-
-
-import {AppDispatch} from '../store';
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 
@@ -17,16 +15,24 @@ const initialState = {
     captcha: null as string | null,
 };
 
-export const getCaptchaDataUrl = createAsyncThunk('app/getCaptchaDataUrl', async (arg, thunkAPI) => {
+export const getCaptchaUrlAC = () => ({type: 'APP-GET_CAPTCHA_URL'});
+
+export function* getCaptchaUrlWorker(action: ReturnType<typeof getCaptchaUrlAC>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const captchaUrl = await authAPI.getCaptchaUrl();
-        thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-        return captchaUrl;
+        debugger
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const captchaUrl: AxiosResponse<{ url: string }> = yield call(authAPI.getCaptchaUrl);
+        yield put(setCaptchaUrl(captchaUrl.data));
+        yield put(setPreloaderStatus({status: 'succeeded'}));
+
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+
     }
-});
+}
+
+export function* getCaptchaWatcher() {
+    yield takeEvery('APP-GET_CAPTCHA_URL', getCaptchaUrlWorker);
+}
 
 const slice = createSlice({
     name: 'app',
@@ -41,18 +47,19 @@ const slice = createSlice({
         setError(state, action: PayloadAction<{ error: string | null }>) {
             state.error = action.payload.error;
         },
-    },
-    extraReducers(builder) {
-        builder.addCase(getCaptchaDataUrl.fulfilled, (state, action) => {
-            if (action.payload) state.captcha = action.payload.data.url;
-        });
+        setCaptchaUrl(state, action: PayloadAction<{ url: string }>) {
+            debugger
+            state.captcha = action.payload.url;
+        }
     },
 });
 
 export const appReducer = slice.reducer;
-export const {setInitialized, setError, setPreloaderStatus} = slice.actions;
+export const {setInitialized, setError, setPreloaderStatus, setCaptchaUrl} = slice.actions;
 
 export type ActionTypeForAppReducer =
     ReturnType<typeof setPreloaderStatus>
     | ReturnType<typeof setError>
     | ReturnType<typeof setInitialized>
+    | ReturnType<typeof setCaptchaUrl>
+    | ReturnType<typeof getCaptchaUrlAC>

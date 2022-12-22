@@ -43,6 +43,7 @@ const startState = {
 export const getUserProfileAC = (userId: number) => ({type: 'PROFILE-GET_PROFILE_DATA', userId});
 
 export function* getUserProfileWorker(action: ReturnType<typeof getUserProfileAC>) {
+    debugger
     yield put(setPreloaderStatus({status: 'loading'}));
     const userProfile: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
     yield put(setUserProfileData({data: userProfile.data}));
@@ -80,5 +81,5 @@ export const {cleanDataUser, setUserProfileData} = slice.actions;
 
 export const userProfileReducer = slice.reducer;
 
-export type ActionTypeForUserProfileReducer = ReturnType<typeof cleanDataUser> | ReturnType<typeof getUserProfileAC> | ReturnType<typeof setUserProfileData>
+export type ActionTypeForUserProfileReducer = ReturnType<typeof cleanDataUser> | ReturnType<typeof getUserProfileAC>
 

@@ -1,10 +1,11 @@
 import createSagaMiddleware from 'redux-saga';
+import {all} from '@redux-saga/core/effects';
 import {combineReducers} from 'redux';
 import thunkMiddleware, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
-import {ActionTypeForAppReducer, appReducer} from './reducers/appReducer';
+import {ActionTypeForAppReducer, appReducer, getCaptchaWatcher} from './reducers/appReducer';
 import {authReducer} from './reducers/authReducer';
 import {profileReducer} from './reducers/profileReducer';
 import {ActionTypeForUsersReducer, usersReducer} from './reducers/usersReducers';
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
 });
 
 function* rootWatcher() {
-    yield userProfileWatcher();
+    yield all([userProfileWatcher(), getCaptchaWatcher()]);
+
 }
 
 export const store = configureStore({
