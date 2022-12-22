@@ -1,18 +1,19 @@
 import {AxiosResponse} from 'axios';
 
 import {instance, ResponseTypeSocNet} from './instance';
+import {ProfilePayloadType} from '../store/reducers/profileReducer';
 
 export const profileAPI = {
     getProfile(userId: number): Promise<AxiosResponse<ProfileResponse>> {
         return instance.get<ProfileResponse>('profile/' + userId);
     },
-    getStatus(userId: number) {
+    getStatus(userId: number): Promise<AxiosResponse> {
         return instance.get('profile/status/' + userId);
     },
-    updateStatus(status: string) {
+    updateStatus(status: string): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.put<ResponseTypeSocNet>('profile/status/', {status});
     },
-    updatePhoto(image: File) {
+    updatePhoto(image: File): Promise<AxiosResponse<ResponseTypeSocNet<{ photos: PhotoType }>>> {
         const formData = new FormData();
         formData.append('image', image);
         return instance.put<ResponseTypeSocNet<{ photos: PhotoType }>>('profile/photo/', formData, {
@@ -21,7 +22,7 @@ export const profileAPI = {
             },
         });
     },
-    updateProfileData(data: any) {
+    updateProfileData(data: ProfilePayloadType): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.put<ResponseTypeSocNet>('profile', data);
     },
 };

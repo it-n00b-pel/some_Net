@@ -40,19 +40,17 @@ const startState = {
 //     }
 // });
 
-export const getUserProfileAC = (userId: number) => ({type: 'PROFILE-GET_PROFILE_DATA', userId});
+export const getUserProfileAC = (userId: number) => ({type: 'PROFILE-GET_PROFILE', userId});
 
 export function* getUserProfileWorker(action: ReturnType<typeof getUserProfileAC>) {
-    debugger
     yield put(setPreloaderStatus({status: 'loading'}));
     const userProfile: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
     yield put(setUserProfileData({data: userProfile.data}));
     yield put(setPreloaderStatus({status: 'succeeded'}));
-    yield userProfile;
 }
 
 export function* userProfileWatcher() {
-    yield takeEvery('PROFILE-GET_PROFILE_DATA', getUserProfileWorker);
+    yield takeEvery('PROFILE-GET_PROFILE', getUserProfileWorker);
 }
 
 const slice = createSlice({

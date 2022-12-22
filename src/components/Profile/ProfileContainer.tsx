@@ -13,10 +13,14 @@ const ProfileContainer: React.FC = () => {
 
     const profile = useAppSelector(state => state.profile.profile);
     const isLogin = useAppSelector(state => state.auth.isLogin);
+    const id = useAppSelector(state => state.auth.myData.id);
     const isInitialized = useAppSelector(state => state.app.isInitialized);
 
     useEffect(() => {
-        isInitialized && isLogin && userId && dispatch(getProfileData(+userId));
+        if (userId && +userId !== id) {
+            isInitialized && isLogin && userId && dispatch(getProfileData(+userId));
+        }
+
     }, [userId]);
 
     // if (!isInitialized) return <CircularProgress size={60} className={p.preloader}/>;

@@ -1,70 +1,82 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {call, put, takeEvery} from '@redux-saga/core/effects';
 
-import {AxiosError} from 'axios';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {Contacts, PhotoType, profileAPI} from '../../api/profileAPI';
+import {AxiosResponse} from 'axios';
 
-import {AppDispatch} from '../store';
-import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utls';
+import {Contacts, PhotoType, profileAPI, ProfileResponse} from '../../api/profileAPI';
 
 import {setPreloaderStatus} from './appReducer';
+import {ResponseTypeSocNet} from '../../api/instance';
 
-export const getProfileData = createAsyncThunk('profile/getProfileData', async (userId: number, thunkAPI) => {
-    try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const profileData = await profileAPI.getProfile(userId);
-        const status = await profileAPI.getStatus(userId);
-        thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-        return {profileData, status};
-    } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-    }
-});
+export const getProfileData = (userId: number) => ({type: 'PROFILE-GET_PROFILE_DATA', userId});
 
-export const updateStatus = createAsyncThunk('profile/updateStatus', async (status: string, thunkAPI) => {
+function* getProfileWorker(action: ReturnType<typeof getProfileData>) {
+    yield put(setPreloaderStatus({status: 'loading'}));
+    const profileData: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
+    const status: AxiosResponse = yield call(profileAPI.getStatus, action.userId);
+    yield put(setStatus(status.data));
+    yield put(setProfileData(profileData));
+    yield put(setPreloaderStatus({status: 'succeeded'}));
+}
+
+export const updateStatus = (status: string) => ({type: 'PROFILE-UPDATE_STATUS', status});
+
+export function* updateStatusWorker(action: ReturnType<typeof updateStatus>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const newStatus = await profileAPI.updateStatus(status);
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const newStatus: AxiosResponse<ResponseTypeSocNet> = yield call(profileAPI.updateStatus, action.status);
         if (newStatus.data.resultCode === 0) {
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-            return newStatus;
+            yield put(setStatus(action.status));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            handleServerAppError(newStatus.data, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError(newStatus.data, thunkAPI.dispatch as AppDispatch);
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
     }
-});
+}
 
-export const updateProfilePhoto = createAsyncThunk('profile/updateProfilePhoto', async (photo: File, thunkAPI) => {
+export const updateProfilePhoto = (photo: File) => ({type: 'PROFILE-UPDATE_PROFILE_PHOTO', photo});
+
+export function* updateProfilePhotoWorker(action: ReturnType<typeof updateProfilePhoto>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const profilePhoto = await profileAPI.updatePhoto(photo);
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const profilePhoto: AxiosResponse<ResponseTypeSocNet<{ photos: PhotoType }>> = yield call(profileAPI.updatePhoto, action.photo);
         if (profilePhoto.data.resultCode === 0) {
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-            return profilePhoto;
+            yield put(updatePhoto(profilePhoto.data.data));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            handleServerAppError(profilePhoto.data, thunkAPI.dispatch as AppDispatch);
-        }
-    } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-    }
-});
 
-export const updateProfileData = createAsyncThunk('profile/updateProfileData', async (profileData: ProfilePayloadType, thunkAPI) => {
-    try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const response = await profileAPI.updateProfileData(profileData);
-        if (response.data.resultCode === 0) {
-            thunkAPI.dispatch(saveDataFromForm({data: profileData}));
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-        } else {
-            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+
     }
-});
+}
+
+export const updateProfileData = (profileData: ProfilePayloadType) => ({type: 'PROFILE-UPDATE-PROFILE-DATA', profileData});
+
+export function* updateProfileDataWorker(action: ReturnType<typeof updateProfileData>) {
+    try {
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const response: AxiosResponse<ResponseTypeSocNet> = yield call(profileAPI.updateProfileData, action.profileData);
+        if (response.data.resultCode === 0) {
+            yield put(saveDataFromForm({data: action.profileData}));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
+        } else {
+
+        }
+    } catch (err) {
+
+    }
+}
+
+export function* getProfileWatcher() {
+    yield takeEvery('PROFILE-GET_PROFILE_DATA', getProfileWorker);
+    yield takeEvery('PROFILE-UPDATE_STATUS', updateStatusWorker);
+    yield takeEvery('PROFILE-UPDATE_PROFILE_PHOTO', updateProfilePhotoWorker);
+    yield takeEvery('PROFILE-UPDATE-PROFILE-DATA', updateProfileDataWorker);
+}
 
 const slice = createSlice({
     name: 'profile',
@@ -95,28 +107,19 @@ const slice = createSlice({
         saveDataFromForm(state, action: PayloadAction<{ data: ProfilePayloadType }>) {
             return {...state, profile: {...action.payload.data, photos: state.profile.photos}};
         },
-    },
-    extraReducers(builder) {
-        builder.addCase(getProfileData.fulfilled, (state, action) => {
-            if (action.payload) {
-                return {...state, status: action.payload.status.data, profile: action.payload.profileData.data};
-            }
-        });
-        builder.addCase(updateStatus.fulfilled, (state, action) => {
-            if (action.payload && action.payload.status) {
-                return {...state, status: action.meta.arg};
-            }
-        });
-        builder.addCase(updateProfilePhoto.fulfilled, (state, action) => {
-            if (action.payload) {
-                return {...state, profile: {...state.profile, photos: action.payload.data.data.photos}};
-            }
-        });
-
+        setProfileData(state, action: PayloadAction<{ data: ProfileResponse }>) {
+            return {...state, profile: action.payload.data};
+        },
+        setStatus(state, action: PayloadAction<string>) {
+            state.status = action.payload;
+        },
+        updatePhoto(state, action: PayloadAction<{ photos: PhotoType }>) {
+            state.profile.photos = action.payload.photos;
+        },
     },
 });
 
-export const {saveDataFromForm} = slice.actions;
+export const {saveDataFromForm, setProfileData, setStatus, updatePhoto} = slice.actions;
 
 export type ProfilePayloadType = {
     aboutMe: string,
