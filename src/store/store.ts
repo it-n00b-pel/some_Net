@@ -6,9 +6,9 @@ import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
 import {ActionTypeForAppReducer, appReducer, getCaptchaWatcher} from './reducers/appReducer';
-import {authReducer} from './reducers/authReducer';
+import {authReducer, authWatcher} from './reducers/authReducer';
 import {getProfileWatcher, profileReducer} from './reducers/profileReducer';
-import {ActionTypeForUsersReducer, usersReducer} from './reducers/usersReducers';
+import {ActionTypeForUsersReducer, usersReducer, usersWatcher} from './reducers/usersReducers';
 import {ActionTypeForUserProfileReducer, userProfileReducer, userProfileWatcher} from './reducers/userProfileReducer';
 import {DialogsActionType, dialogsReducer} from './reducers/messagesReducer';
 
@@ -23,7 +23,11 @@ const rootReducer = combineReducers({
 });
 
 function* rootWatcher() {
-    yield all([userProfileWatcher(), getCaptchaWatcher(), getProfileWatcher()]);
+    yield all([userProfileWatcher(),
+        getCaptchaWatcher(),
+        getProfileWatcher(),
+        usersWatcher(),
+        authWatcher()]);
 }
 
 export const store = configureStore({

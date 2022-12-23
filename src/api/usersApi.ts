@@ -1,7 +1,8 @@
 import {instance, ResponseTypeSocNet} from './instance';
+import {AxiosResponse} from 'axios';
 
 export const usersApi = {
-    getUsers(args: UsersQueryParametersType) {
+    getUsers(args: UsersQueryParametersType): Promise<AxiosResponse<UsersResponse>> {
         return instance.get<UsersResponse>('users/', {params: args});
     },
     follow(userId: number) {

@@ -1,16 +1,14 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {call, put, takeEvery} from '@redux-saga/core/effects';
 
-import {AxiosError} from 'axios';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {authAPI, LoginData} from '../../api/authAPI';
-
-import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utls';
-
-import {AppDispatch} from '../store';
+import {authAPI, LoginData, MeData} from '../../api/authAPI';
 
 import {getCaptchaUrlAC, setInitialized, setPreloaderStatus} from './appReducer';
 import {getProfileData} from './profileReducer';
-import {getFriends} from './usersReducers';
+import {getFriends, setFriends} from './usersReducers';
+import {AxiosResponse} from 'axios';
+import {ResponseTypeSocNet} from '../../api/instance';
 
 const initialState = {
     myData: {
@@ -21,58 +19,72 @@ const initialState = {
     isLogin: false,
 };
 
-export const me = createAsyncThunk('auth/me', async (arg, thunkAPI) => {
-    thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
+export const me = () => ({type: 'AUTH-ME'});
+
+export function* meWorker(action: ReturnType<typeof me>) {
     try {
-        const myData = await authAPI.me();
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const myData: AxiosResponse<ResponseTypeSocNet<MeData>> = yield call(authAPI.me);
         if (myData.data.resultCode === 0) {
-            await thunkAPI.dispatch(getFriends({count: 100, term: '', page: 1, friend: true}));
-            await thunkAPI.dispatch(getProfileData(myData.data.data.id));
-            thunkAPI.dispatch(setIsLogin({isLogin: true}));
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-            return myData;
+            yield put(setMyData(myData.data.data));
+            yield  put(getProfileData(myData.data.data.id));
+            yield put(getFriends({count: 100, term: '', page: 1, friend: true}));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            thunkAPI.dispatch(setPreloaderStatus({status: 'failed'}));
+            yield put(setPreloaderStatus({status: 'failed'}));
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+
     } finally {
-        thunkAPI.dispatch(setInitialized({isInitialized: true}));
+        yield put(setInitialized({isInitialized: true}));
     }
-});
+}
 
-export const login = createAsyncThunk('auth/login', async (loginData: LoginData, thunkAPI) => {
+export const login = (loginData: LoginData) => ({type: 'AUTH-LOGIN', loginData});
+
+export function* loginWorker(action: ReturnType<typeof login>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const response = await authAPI.login(loginData);
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const response: AxiosResponse<ResponseTypeSocNet> = yield call(authAPI.login, action.loginData);
         if (response.data.resultCode === 0) {
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-            await thunkAPI.dispatch(me());
+            yield put(setPreloaderStatus({status: 'succeeded'}));
+            yield put(me());
         } else if (response.data.resultCode === 10) {
-            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
-            thunkAPI.dispatch(getCaptchaUrlAC());
-        } else {
-            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
+            yield put(getCaptchaUrlAC());
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-    }
-});
+//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
 
-export const logOut = createAsyncThunk('auth/logOut', async (arg, thunkAPI) => {
+    }
+
+}
+
+export const logOut = () => ({type: 'AUTH-LOGOUT'});
+
+export function* logOutWorker(action: ReturnType<typeof logOut>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const logOut = await authAPI.logOut();
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const logOut: AxiosResponse<ResponseTypeSocNet> = yield call(authAPI.logOut);
         if (logOut.data.resultCode === 0) {
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-            return logOut;
+            yield put(setPreloaderStatus({status: 'succeeded'}));
+            yield put(log_Out());
+            yield put(setFriends({items: [], error: null, totalCount: 0}));
         } else {
-            handleServerAppError(logOut.data, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError(logOut.data, thunkAPI.dispatch as AppDispatch);
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+
     }
-});
+}
+
+export function* authWatcher() {
+    yield takeEvery('AUTH-ME', meWorker);
+    yield takeEvery('AUTH-LOGIN', loginWorker);
+    yield takeEvery('AUTH-LOGOUT', logOutWorker);
+}
 
 const slice = createSlice({
     name: 'auth',
@@ -81,24 +93,19 @@ const slice = createSlice({
         setIsLogin(state, action: PayloadAction<{ isLogin: boolean }>) {
             state.isLogin = action.payload.isLogin;
         },
-    },
-    extraReducers(builder) {
-        builder.addCase(me.fulfilled, (state, action) => {
-            if (action.payload) {
-                state.myData = action.payload.data.data;
-            }
-        });
-        builder.addCase(logOut.fulfilled, (state, action) => {
-            if (action.payload && action.payload.data.resultCode === 0) {
-                state.myData.id = 0;
-                state.myData.email = '';
-                state.myData.login = '';
-                state.isLogin = false;
-            }
-        });
+        setMyData(state, action: PayloadAction<MeData>) {
+            state.myData = action.payload;
+            state.isLogin = true;
+        },
+        log_Out(state) {
+            state.myData.id = 0;
+            state.myData.email = '';
+            state.myData.login = '';
+            state.isLogin = false;
+        }
     },
 });
 
-export const {setIsLogin} = slice.actions;
+export const {setIsLogin, setMyData, log_Out} = slice.actions;
 
 export const authReducer = slice.reducer;

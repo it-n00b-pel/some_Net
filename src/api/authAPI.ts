@@ -2,14 +2,14 @@ import {instance, ResponseTypeSocNet} from './instance';
 import {AxiosResponse} from 'axios';
 
 export const authAPI = {
-    me() {
+    me(): Promise<AxiosResponse<ResponseTypeSocNet<MeData>>> {
         return instance.get <ResponseTypeSocNet<MeData>>
         ('auth/me');
     },
-    login(loginData: LoginData) {
+    login(loginData: LoginData): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.post<ResponseTypeSocNet<{ userId: number }>>('auth/login', loginData);
     },
-    logOut() {
+    logOut(): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.delete<ResponseTypeSocNet>('auth/login');
     },
     getCaptchaUrl(): Promise<AxiosResponse<{ url: string }>> {
@@ -17,7 +17,7 @@ export const authAPI = {
     },
 };
 
-type MeData = {
+export type MeData = {
     id: number,
     email: string,
     login: string

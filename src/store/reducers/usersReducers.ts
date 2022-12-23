@@ -1,3 +1,5 @@
+import {call, put, takeEvery} from '@redux-saga/core/effects';
+
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 import {AxiosError} from 'axios';
@@ -7,9 +9,8 @@ import {usersApi, UsersQueryParametersType, UsersResponse} from '../../api/users
 import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utls';
 import {AppDispatch} from '../store';
 import {ResponseTypeSocNet} from '../../api/instance';
-
-import {logOut} from './authReducer';
 import {setPreloaderStatus} from './appReducer';
+import {AxiosResponse} from 'axios';
 
 export const getUsers = createAsyncThunk('users/getUsers', async (args: UsersQueryParametersType, thunkAPI) => {
     try {
@@ -25,19 +26,39 @@ export const getUsers = createAsyncThunk('users/getUsers', async (args: UsersQue
     }
 });
 
-export const getFriends = createAsyncThunk('users/getFriends', async (args: UsersQueryParametersType, thunkAPI) => {
+// export const getFriends = createAsyncThunk('users/getFriends', async (args: UsersQueryParametersType, thunkAPI) => {
+//     try {
+//         thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
+//         const friends = await usersApi.getUsers(args);
+//         thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
+//         if (friends.data.error) {
+//             handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
+//         }
+//         return friends;
+//     } catch (err) {
+//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+//     }
+// });
+
+export const getFriends = (args: UsersQueryParametersType) => ({type: 'USERS-GET_FRIENDS', args});
+
+export function* getFriendsWorker(action: ReturnType<typeof getFriends>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const friends = await usersApi.getUsers(args);
-        thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const friends: AxiosResponse<UsersResponse> = yield call(usersApi.getUsers, action.args);
+        yield put(setFriends(friends.data));
+        yield put(setPreloaderStatus({status: 'succeeded'}));
         if (friends.data.error) {
-            handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
+            //             handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
         }
-        return friends;
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+
     }
-});
+}
+
+export function* usersWatcher() {
+    yield takeEvery('USERS-GET_FRIENDS', getFriendsWorker);
+}
 
 export const follow = createAsyncThunk('users/follow', async (userId: number, thunkAPI) => {
     try {
@@ -95,6 +116,9 @@ const slice = createSlice({
             const newUser = state.users.items.find(u => u.id === action.payload.userId);
             newUser && state.friends.items.push(newUser);
         },
+        setFriends(state, action: PayloadAction<UsersResponse>) {
+            state.friends = action.payload;
+        }
     },
     extraReducers(builder) {
         builder.addCase(getUsers.fulfilled, (state, action) => {
@@ -102,20 +126,24 @@ const slice = createSlice({
                 return {...state, users: action.payload.data};
             }
         });
-        builder.addCase(getFriends.fulfilled, (state, action) => {
-            if (action.payload) {
-                return {...state, friends: action.payload.data};
-            }
-        });
-        builder.addCase(logOut.fulfilled, (state, action) => {
-            state.friends.items = [];
-        });
+        // builder.addCase(getFriends.fulfilled, (state, action) => {
+        //     if (action.payload) {
+        //         return {...state, friends: action.payload.data};
+        //     }
+        // });
+        // builder.addCase(logOut.fulfilled, (state, action) => {
+        //     state.friends.items = [];
+        // });
     },
 
 });
 
-export const {changeSearchParams, follow_unfollow, addNewUser} = slice.actions;
+export const {changeSearchParams, follow_unfollow, addNewUser, setFriends} = slice.actions;
 
-export type ActionTypeForUsersReducer = ReturnType<typeof changeSearchParams> | ReturnType<typeof follow_unfollow> | ReturnType<typeof addNewUser>
+export type ActionTypeForUsersReducer =
+    ReturnType<typeof changeSearchParams>
+    | ReturnType<typeof follow_unfollow>
+    | ReturnType<typeof addNewUser>
+    | ReturnType<typeof setFriends>
 
 export const usersReducer = slice.reducer;
