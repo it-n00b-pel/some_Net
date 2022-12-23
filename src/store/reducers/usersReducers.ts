@@ -2,15 +2,12 @@ import {call, put, takeEvery} from '@redux-saga/core/effects';
 
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {AxiosError} from 'axios';
+import {AxiosResponse} from 'axios';
 
 import {usersApi, UsersQueryParametersType, UsersResponse} from '../../api/usersApi';
-
-import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utls';
-import {AppDispatch} from '../store';
-import {ResponseTypeSocNet} from '../../api/instance';
 import {setPreloaderStatus} from './appReducer';
-import {AxiosResponse} from 'axios';
+import {handleServerNetworkError} from '../../utils-error/error-utils';
+import {AxiosError} from 'axios';
 
 export const getUsers = createAsyncThunk('users/getUsers', async (args: UsersQueryParametersType, thunkAPI) => {
     try {
@@ -18,11 +15,11 @@ export const getUsers = createAsyncThunk('users/getUsers', async (args: UsersQue
         const users = await usersApi.getUsers(args);
         thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
         if (users.data.error) {
-            handleServerAppError({messages: [users.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError({messages: [users.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
         }
         return users;
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
     }
 });
 
@@ -52,7 +49,7 @@ export function* getFriendsWorker(action: ReturnType<typeof getFriends>) {
             //             handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
         }
     } catch (err) {
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 
@@ -69,10 +66,10 @@ export const follow = createAsyncThunk('users/follow', async (userId: number, th
             thunkAPI.dispatch(addNewUser({userId}));
             thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
         }
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
     }
 });
 
@@ -84,11 +81,11 @@ export const unFollow = createAsyncThunk('users/unFollow', async (userId: number
             thunkAPI.dispatch(follow_unfollow({userId}));
             thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
+            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
         }
 
     } catch (err) {
-        handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
     }
 });
 

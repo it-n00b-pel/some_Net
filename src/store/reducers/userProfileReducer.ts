@@ -7,6 +7,8 @@ import {AxiosResponse} from 'axios';
 import {Contacts, PhotoType, profileAPI, ProfileResponse} from '../../api/profileAPI';
 
 import {setPreloaderStatus} from './appReducer';
+import {handleServerNetworkError} from '../../utils-error/error-utils';
+import {AxiosError} from 'axios';
 
 const startState = {
     lookingForAJob: false,
@@ -29,24 +31,17 @@ const startState = {
     } as PhotoType,
 };
 
-// export const getUserProfile = createAsyncThunk('user/getUserProfile', async (userId: number, thunkAPI) => {
-//     try {
-//         thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-//         const userProfile = await profileAPI.getProfile(userId);
-//         thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-//         return userProfile;
-//     } catch (err) {
-//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-//     }
-// });
-
 export const getUserProfileAC = (userId: number) => ({type: 'PROFILE-GET_PROFILE', userId});
 
 export function* getUserProfileWorker(action: ReturnType<typeof getUserProfileAC>) {
-    yield put(setPreloaderStatus({status: 'loading'}));
-    const userProfile: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
-    yield put(setUserProfileData({data: userProfile.data}));
-    yield put(setPreloaderStatus({status: 'succeeded'}));
+    try {
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const userProfile: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
+        yield put(setUserProfileData({data: userProfile.data}));
+        yield put(setPreloaderStatus({status: 'succeeded'}));
+    } catch (err) {
+        yield put(handleServerNetworkError(err as AxiosError));
+    }
 }
 
 export function* userProfileWatcher() {
@@ -66,13 +61,6 @@ const slice = createSlice({
             state.profile = action.payload.data;
         }
     },
-    // extraReducers(builder) {
-    //     builder.addCase(getUserProfile.fulfilled, (state, action) => {
-    //         if (action.payload) {
-    //             state.profile = action.payload.data;
-    //         }
-    //     });
-    // },
 });
 
 export const {cleanDataUser, setUserProfileData} = slice.actions;

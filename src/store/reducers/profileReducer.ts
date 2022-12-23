@@ -2,22 +2,27 @@ import {call, put, takeEvery} from '@redux-saga/core/effects';
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 import {Contacts, PhotoType, profileAPI, ProfileResponse} from '../../api/profileAPI';
 
 import {setPreloaderStatus} from './appReducer';
 import {ResponseTypeSocNet} from '../../api/instance';
+import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
 
 export const getProfileData = (userId: number) => ({type: 'PROFILE-GET_PROFILE_DATA', userId});
 
 function* getProfileWorker(action: ReturnType<typeof getProfileData>) {
-    yield put(setPreloaderStatus({status: 'loading'}));
-    const profileData: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
-    const status: AxiosResponse = yield call(profileAPI.getStatus, action.userId);
-    yield put(setStatus(status.data));
-    yield put(setProfileData(profileData));
-    yield put(setPreloaderStatus({status: 'succeeded'}));
+    try {
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const profileData: AxiosResponse<ProfileResponse> = yield call(profileAPI.getProfile, action.userId);
+        const status: AxiosResponse = yield call(profileAPI.getStatus, action.userId);
+        yield put(setStatus(status.data));
+        yield put(setProfileData(profileData));
+        yield put(setPreloaderStatus({status: 'succeeded'}));
+    } catch (err) {
+        yield put(handleServerNetworkError(err as AxiosError));
+    }
 }
 
 export const updateStatus = (status: string) => ({type: 'PROFILE-UPDATE_STATUS', status});
@@ -30,10 +35,10 @@ export function* updateStatusWorker(action: ReturnType<typeof updateStatus>) {
             yield put(setStatus(action.status));
             yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-            // handleServerAppError(newStatus.data, thunkAPI.dispatch as AppDispatch);
+            yield put(handleServerAppError(newStatus.data));
         }
     } catch (err) {
-        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 
@@ -47,10 +52,10 @@ export function* updateProfilePhotoWorker(action: ReturnType<typeof updateProfil
             yield put(updatePhoto(profilePhoto.data.data));
             yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-
+            yield put(handleServerAppError(profilePhoto.data));
         }
     } catch (err) {
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 
@@ -64,10 +69,10 @@ export function* updateProfileDataWorker(action: ReturnType<typeof updateProfile
             yield put(saveDataFromForm({data: action.profileData}));
             yield put(setPreloaderStatus({status: 'succeeded'}));
         } else {
-
+            yield put(handleServerAppError(response.data));
         }
     } catch (err) {
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 

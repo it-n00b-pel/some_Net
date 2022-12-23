@@ -7,8 +7,9 @@ import {authAPI, LoginData, MeData} from '../../api/authAPI';
 import {getCaptchaUrlAC, setInitialized, setPreloaderStatus} from './appReducer';
 import {getProfileData} from './profileReducer';
 import {getFriends, setFriends} from './usersReducers';
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {ResponseTypeSocNet} from '../../api/instance';
+import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
 
 const initialState = {
     myData: {
@@ -34,7 +35,7 @@ export function* meWorker(action: ReturnType<typeof me>) {
             yield put(setPreloaderStatus({status: 'failed'}));
         }
     } catch (err) {
-//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        yield put(handleServerNetworkError(err as AxiosError));
 
     } finally {
         yield put(setInitialized({isInitialized: true}));
@@ -50,13 +51,14 @@ export function* loginWorker(action: ReturnType<typeof login>) {
         if (response.data.resultCode === 0) {
             yield put(setPreloaderStatus({status: 'succeeded'}));
             yield put(me());
+        } else if (response.data.resultCode === 1) {
+            yield put(handleServerAppError(response.data));
         } else if (response.data.resultCode === 10) {
-            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
+            yield put(handleServerAppError(response.data));
             yield put(getCaptchaUrlAC());
         }
     } catch (err) {
-//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 
 }
@@ -72,11 +74,10 @@ export function* logOutWorker(action: ReturnType<typeof logOut>) {
             yield put(log_Out());
             yield put(setFriends({items: [], error: null, totalCount: 0}));
         } else {
-            // handleServerAppError(logOut.data, thunkAPI.dispatch as AppDispatch);
+            yield put(handleServerAppError(logOut.data));
         }
     } catch (err) {
-//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 

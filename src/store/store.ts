@@ -11,6 +11,7 @@ import {getProfileWatcher, profileReducer} from './reducers/profileReducer';
 import {ActionTypeForUsersReducer, usersReducer, usersWatcher} from './reducers/usersReducers';
 import {ActionTypeForUserProfileReducer, userProfileReducer, userProfileWatcher} from './reducers/userProfileReducer';
 import {DialogsActionType, dialogsReducer} from './reducers/messagesReducer';
+import {errorWatcher} from '../utils-error/error-utils';
 
 const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
@@ -27,7 +28,8 @@ function* rootWatcher() {
         getCaptchaWatcher(),
         getProfileWatcher(),
         usersWatcher(),
-        authWatcher()]);
+        authWatcher(),
+        errorWatcher()]);
 }
 
 export const store = configureStore({

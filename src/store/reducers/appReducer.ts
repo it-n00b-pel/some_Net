@@ -19,7 +19,6 @@ export const getCaptchaUrlAC = () => ({type: 'APP-GET_CAPTCHA_URL'});
 
 export function* getCaptchaUrlWorker(action: ReturnType<typeof getCaptchaUrlAC>) {
     try {
-        debugger
         yield put(setPreloaderStatus({status: 'loading'}));
         const captchaUrl: AxiosResponse<{ url: string }> = yield call(authAPI.getCaptchaUrl);
         yield put(setCaptchaUrl(captchaUrl.data));
