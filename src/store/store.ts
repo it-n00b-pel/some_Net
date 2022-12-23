@@ -5,13 +5,15 @@ import thunkMiddleware, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
+import {errorWatcher} from '../utils-error/error-utils';
+
 import {ActionTypeForAppReducer, appReducer, getCaptchaWatcher} from './reducers/appReducer';
 import {authReducer, authWatcher} from './reducers/authReducer';
 import {getProfileWatcher, profileReducer} from './reducers/profileReducer';
 import {ActionTypeForUsersReducer, usersReducer, usersWatcher} from './reducers/usersReducers';
 import {ActionTypeForUserProfileReducer, userProfileReducer, userProfileWatcher} from './reducers/userProfileReducer';
 import {DialogsActionType, dialogsReducer} from './reducers/messagesReducer';
-import {errorWatcher} from '../utils-error/error-utils';
+
 
 const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({

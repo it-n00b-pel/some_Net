@@ -2,11 +2,11 @@ import {call, put, takeEvery} from '@redux-saga/core/effects';
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {AxiosResponse} from 'axios';
+import {AxiosResponse, AxiosError} from 'axios';
 
 import {authAPI} from '../../api/authAPI';
+
 import {handleServerNetworkError} from '../../utils-error/error-utils';
-import {AxiosError} from 'axios';
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 
@@ -50,7 +50,7 @@ const slice = createSlice({
         setCaptchaUrl(state, action: PayloadAction<{ url: string }>) {
             debugger
             state.captcha = action.payload.url;
-        }
+        },
     },
 });
 

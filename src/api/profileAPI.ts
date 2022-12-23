@@ -1,7 +1,8 @@
 import {AxiosResponse} from 'axios';
 
-import {instance, ResponseTypeSocNet} from './instance';
 import {ProfilePayloadType} from '../store/reducers/profileReducer';
+
+import {instance, ResponseTypeSocNet} from './instance';
 
 export const profileAPI = {
     getProfile(userId: number): Promise<AxiosResponse<ProfileResponse>> {

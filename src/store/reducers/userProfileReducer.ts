@@ -2,13 +2,13 @@ import {call, put, takeEvery} from '@redux-saga/core/effects';
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {AxiosResponse} from 'axios';
+import {AxiosResponse,AxiosError} from 'axios';
 
 import {Contacts, PhotoType, profileAPI, ProfileResponse} from '../../api/profileAPI';
 
-import {setPreloaderStatus} from './appReducer';
 import {handleServerNetworkError} from '../../utils-error/error-utils';
-import {AxiosError} from 'axios';
+
+import {setPreloaderStatus} from './appReducer';
 
 const startState = {
     lookingForAJob: false,
@@ -59,7 +59,7 @@ const slice = createSlice({
         },
         setUserProfileData(state, action: PayloadAction<{ data: ProfileResponse }>) {
             state.profile = action.payload.data;
-        }
+        },
     },
 });
 

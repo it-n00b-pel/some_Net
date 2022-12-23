@@ -24,7 +24,6 @@ const openHandler = () => {
 
 const errorHandler = () => {
     subscribers['status-changed'].forEach(s => s('error'));
-    console.log('RESTART PAGE');
 };
 
 const createChanel = () => {

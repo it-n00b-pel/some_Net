@@ -1,5 +1,7 @@
-import {instance, ResponseTypeSocNet} from './instance';
 import {AxiosResponse} from 'axios';
+
+import {instance, ResponseTypeSocNet} from './instance';
+
 
 export const authAPI = {
     me(): Promise<AxiosResponse<ResponseTypeSocNet<MeData>>> {

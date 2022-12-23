@@ -6,9 +6,11 @@ import {AxiosError, AxiosResponse} from 'axios';
 
 import {Contacts, PhotoType, profileAPI, ProfileResponse} from '../../api/profileAPI';
 
-import {setPreloaderStatus} from './appReducer';
 import {ResponseTypeSocNet} from '../../api/instance';
+
 import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
+
+import {setPreloaderStatus} from './appReducer';
 
 export const getProfileData = (userId: number) => ({type: 'PROFILE-GET_PROFILE_DATA', userId});
 

@@ -2,14 +2,17 @@ import {call, put, takeEvery} from '@redux-saga/core/effects';
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
+import {AxiosError, AxiosResponse} from 'axios';
+
 import {authAPI, LoginData, MeData} from '../../api/authAPI';
+
+import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
+
+import {ResponseTypeSocNet} from '../../api/instance';
 
 import {getCaptchaUrlAC, setInitialized, setPreloaderStatus} from './appReducer';
 import {getProfileData} from './profileReducer';
 import {getFriends, setFriends} from './usersReducers';
-import {AxiosError, AxiosResponse} from 'axios';
-import {ResponseTypeSocNet} from '../../api/instance';
-import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
 
 const initialState = {
     myData: {
@@ -102,7 +105,7 @@ const slice = createSlice({
             state.myData.email = '';
             state.myData.login = '';
             state.isLogin = false;
-        }
+        },
     },
 });
 

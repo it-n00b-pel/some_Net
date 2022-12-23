@@ -5,9 +5,11 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AxiosError, AxiosResponse} from 'axios';
 
 import {usersApi, UsersQueryParametersType, UsersResponse} from '../../api/usersApi';
-import {setPreloaderStatus} from './appReducer';
+
 import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
 import {ResponseTypeSocNet} from '../../api/instance';
+
+import {setPreloaderStatus} from './appReducer';
 
 export const getUsers = (args: UsersQueryParametersType) => ({type: 'USERS-GET_USERS', args});
 
@@ -112,7 +114,7 @@ const slice = createSlice({
         },
         setUsers(state, action: PayloadAction<UsersResponse>) {
             state.users = action.payload;
-        }
+        },
     },
 });
 
