@@ -5,6 +5,8 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AxiosResponse} from 'axios';
 
 import {authAPI} from '../../api/authAPI';
+import {handleServerNetworkError} from '../../utils-error/error-utils';
+import {AxiosError} from 'axios';
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 
@@ -23,9 +25,8 @@ export function* getCaptchaUrlWorker(action: ReturnType<typeof getCaptchaUrlAC>)
         const captchaUrl: AxiosResponse<{ url: string }> = yield call(authAPI.getCaptchaUrl);
         yield put(setCaptchaUrl(captchaUrl.data));
         yield put(setPreloaderStatus({status: 'succeeded'}));
-
     } catch (err) {
-
+        yield put(handleServerNetworkError(err as AxiosError));
     }
 }
 

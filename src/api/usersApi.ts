@@ -5,10 +5,10 @@ export const usersApi = {
     getUsers(args: UsersQueryParametersType): Promise<AxiosResponse<UsersResponse>> {
         return instance.get<UsersResponse>('users/', {params: args});
     },
-    follow(userId: number) {
+    follow(userId: number): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.post<ResponseTypeSocNet>('follow/' + userId);
     },
-    unFollow(userId: number) {
+    unFollow(userId: number): Promise<AxiosResponse<ResponseTypeSocNet>> {
         return instance.delete<ResponseTypeSocNet>('follow/' + userId);
     },
 };

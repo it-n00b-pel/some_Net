@@ -60,7 +60,6 @@ export function* loginWorker(action: ReturnType<typeof login>) {
     } catch (err) {
         yield put(handleServerNetworkError(err as AxiosError));
     }
-
 }
 
 export const logOut = () => ({type: 'AUTH-LOGOUT'});

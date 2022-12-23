@@ -1,41 +1,29 @@
 import {call, put, takeEvery} from '@redux-saga/core/effects';
 
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 import {usersApi, UsersQueryParametersType, UsersResponse} from '../../api/usersApi';
 import {setPreloaderStatus} from './appReducer';
-import {handleServerNetworkError} from '../../utils-error/error-utils';
-import {AxiosError} from 'axios';
+import {handleServerAppError, handleServerNetworkError} from '../../utils-error/error-utils';
+import {ResponseTypeSocNet} from '../../api/instance';
 
-export const getUsers = createAsyncThunk('users/getUsers', async (args: UsersQueryParametersType, thunkAPI) => {
+export const getUsers = (args: UsersQueryParametersType) => ({type: 'USERS-GET_USERS', args});
+
+export function* getUsersWorker(action: ReturnType<typeof getUsers>) {
     try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const users = await usersApi.getUsers(args);
-        thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const users: AxiosResponse<UsersResponse> = yield call(usersApi.getUsers, action.args);
+        yield put(setUsers(users.data));
+        yield put(setPreloaderStatus({status: 'succeeded'}));
         if (users.data.error) {
-            // handleServerAppError({messages: [users.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
+            yield put(handleServerAppError({messages: [users.data.error]} as ResponseTypeSocNet));
         }
-        return users;
     } catch (err) {
-        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
+        yield put(handleServerNetworkError(err as AxiosError));
     }
-});
-
-// export const getFriends = createAsyncThunk('users/getFriends', async (args: UsersQueryParametersType, thunkAPI) => {
-//     try {
-//         thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-//         const friends = await usersApi.getUsers(args);
-//         thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-//         if (friends.data.error) {
-//             handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
-//         }
-//         return friends;
-//     } catch (err) {
-//         handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-//     }
-// });
+}
 
 export const getFriends = (args: UsersQueryParametersType) => ({type: 'USERS-GET_FRIENDS', args});
 
@@ -46,7 +34,42 @@ export function* getFriendsWorker(action: ReturnType<typeof getFriends>) {
         yield put(setFriends(friends.data));
         yield put(setPreloaderStatus({status: 'succeeded'}));
         if (friends.data.error) {
-            //             handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet, thunkAPI.dispatch as AppDispatch);
+            yield put(handleServerAppError({messages: [friends.data.error]} as ResponseTypeSocNet));
+        }
+    } catch (err) {
+        yield put(handleServerNetworkError(err as AxiosError));
+    }
+}
+
+export const follow = (userId: number) => ({type: 'USERS-FOLLOW', userId});
+
+export function* followWorker(action: ReturnType<typeof follow>) {
+    try {
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const response: AxiosResponse<ResponseTypeSocNet> = yield call(usersApi.follow, action.userId);
+        if (response.data.resultCode === 0) {
+            yield put(follow_unfollow({userId: action.userId}));
+            yield put(addNewUser({userId: action.userId}));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
+        } else {
+            yield put(handleServerAppError(response.data));
+        }
+    } catch (err) {
+        yield put(handleServerNetworkError(err as AxiosError));
+    }
+}
+
+export const unFollow = (userId: number) => ({type: 'USERS-UNFOLLOW', userId});
+
+export function* unFollowWorker(action: ReturnType<typeof unFollow>) {
+    try {
+        yield put(setPreloaderStatus({status: 'loading'}));
+        const response: AxiosResponse<ResponseTypeSocNet> = yield call(usersApi.unFollow, action.userId);
+        if (response.data.resultCode === 0) {
+            yield put(follow_unfollow({userId: action.userId}));
+            yield put(setPreloaderStatus({status: 'succeeded'}));
+        } else {
+            yield put(handleServerAppError(response.data));
         }
     } catch (err) {
         yield put(handleServerNetworkError(err as AxiosError));
@@ -55,39 +78,10 @@ export function* getFriendsWorker(action: ReturnType<typeof getFriends>) {
 
 export function* usersWatcher() {
     yield takeEvery('USERS-GET_FRIENDS', getFriendsWorker);
+    yield takeEvery('USERS-GET_USERS', getUsersWorker);
+    yield takeEvery('USERS-FOLLOW', followWorker);
+    yield takeEvery('USERS-UNFOLLOW', unFollowWorker);
 }
-
-export const follow = createAsyncThunk('users/follow', async (userId: number, thunkAPI) => {
-    try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const response = await usersApi.follow(userId);
-        if (response.data.resultCode === 0) {
-            thunkAPI.dispatch(follow_unfollow({userId}));
-            thunkAPI.dispatch(addNewUser({userId}));
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-        } else {
-            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
-        }
-    } catch (err) {
-        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-    }
-});
-
-export const unFollow = createAsyncThunk('users/unFollow', async (userId: number, thunkAPI) => {
-    try {
-        thunkAPI.dispatch(setPreloaderStatus({status: 'loading'}));
-        const response = await usersApi.unFollow(userId);
-        if (response.data.resultCode === 0) {
-            thunkAPI.dispatch(follow_unfollow({userId}));
-            thunkAPI.dispatch(setPreloaderStatus({status: 'succeeded'}));
-        } else {
-            // handleServerAppError(response.data, thunkAPI.dispatch as AppDispatch);
-        }
-
-    } catch (err) {
-        // handleServerNetworkError(err as AxiosError, thunkAPI.dispatch as AppDispatch);
-    }
-});
 
 const slice = createSlice({
     name: 'users',
@@ -115,27 +109,14 @@ const slice = createSlice({
         },
         setFriends(state, action: PayloadAction<UsersResponse>) {
             state.friends = action.payload;
+        },
+        setUsers(state, action: PayloadAction<UsersResponse>) {
+            state.users = action.payload;
         }
     },
-    extraReducers(builder) {
-        builder.addCase(getUsers.fulfilled, (state, action) => {
-            if (action.payload) {
-                return {...state, users: action.payload.data};
-            }
-        });
-        // builder.addCase(getFriends.fulfilled, (state, action) => {
-        //     if (action.payload) {
-        //         return {...state, friends: action.payload.data};
-        //     }
-        // });
-        // builder.addCase(logOut.fulfilled, (state, action) => {
-        //     state.friends.items = [];
-        // });
-    },
-
 });
 
-export const {changeSearchParams, follow_unfollow, addNewUser, setFriends} = slice.actions;
+export const {changeSearchParams, follow_unfollow, addNewUser, setFriends, setUsers} = slice.actions;
 
 export type ActionTypeForUsersReducer =
     ReturnType<typeof changeSearchParams>
